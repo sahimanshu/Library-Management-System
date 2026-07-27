@@ -1,112 +1,270 @@
-const API_URL = "http://localhost:5000";
+// Data Arrays
+let books = [];
+let students = [];
+let issuedRecords = []; // New array to track who has what book
 
-// Load Books
-async function loadBooks() {
+// ID Counters
+let bookIdCounter = 1;
+let studentIdCounter = 1;
 
-    const response = await fetch(`${API_URL}/books`);
-    const books = await response.json();
+// --- 1. ADD BOOK ---
+function addBook() {
+    const title = document.getElementById('title').value.trim();
+    const author = document.getElementById('author').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const copies = parseInt(document.getElementById('copies').value);
 
-    const table = document.getElementById("bookTable");
+    if (!title || !author || !category || isNaN(copies) || copies <= 0) {
+        alert("Please fill in all book details correctly.");
+        return;
+    }
 
-    table.innerHTML = "";
+    const newBook = {
+        id: bookIdCounter++,
+        title: title,
+        author: author,
+        category: category,
+        copies: copies
+    };
 
+    books.push(newBook);
+    
+    // Clear inputs & update UI
+    document.getElementById('title').value = '';
+    document.getElementById('author').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('copies').value = '';
+
+    loadBooks(); // Refresh book table
+}
+
+// --- 2. ADD STUDENT ---
+function addStudent() {
+    const name = document.getElementById('studentName').value.trim();
+    const email = document.getElementById('studentEmail').value.trim();
+
+    if (!name || !email) {
+        alert("Please enter both the student name and email.");
+        return;
+    }
+
+    const newStudent = {
+        id: studentIdCounter++,
+        name: name,
+        email: email
+    };
+
+    students.push(newStudent);
+
+    // Clear inputs & update UI
+    document.getElementById('studentName').value = '';
+    document.getElementById('studentEmail').value = '';
+
+    loadStudents(); // Refresh student table
+}
+
+// --- 3. ISSUE BOOK ---
+// function issueBook() {
+//     const studentId = parseInt(document.getElementById('studentId').value);
+//     const bookId = parseInt(document.getElementById('bookId').value);
+//     const issueDate = document.getElementById('issueDate').value;
+
+//     if (isNaN(studentId) || isNaN(bookId) || !issueDate) {
+//         alert("Please provide valid IDs and an issue date.");
+//         return;
+//     }
+
+//     const book = books.find(b => b.id === bookId);
+//     const student = students.find(s => s.id === studentId);
+
+//     if (!student) {
+//         alert("Student not found! Please check the Student ID.");
+//         return;
+//     }
+//     if (!book) {
+//         alert("Book not found! Please check the Book ID.");
+//         return;
+//     }
+//     if (book.copies <= 0) {
+//         alert("Sorry, there are no available copies of this book right now.");
+//         return;
+//     }
+
+//     // Deduct copy and save the issue record
+//     book.copies--;
+//     issuedRecords.push({
+//         studentName: student.name,
+//         bookTitle: book.title,
+//         issueDate: issueDate
+//     });
+
+//     // Clear inputs & update UI
+//     document.getElementById('studentId').value = '';
+//     document.getElementById('bookId').value = '';
+//     document.getElementById('issueDate').value = '';
+
+//     loadBooks();       // Updates the 'copies' count in UI
+//     loadIssuedBooks(); // Shows the new issued record
+// }
+// --- 3. ISSUE BOOK (CORRECTED) ---
+// function issueBook() {
+//     const studentId = document.getElementById('studentId').value.trim();
+//     const bookId = document.getElementById('bookId').value.trim();
+//     const issueDate = document.getElementById('issueDate').value;
+
+//     if (!studentId || !bookId || !issueDate) {
+//         alert("Please provide valid IDs and an issue date.");
+//         return;
+//     }
+
+//     // Using "==" instead of "===" ensures it matches even if types (string/number) differ
+//     const book = books.find(b => b.id == bookId);
+//     const student = students.find(s => s.id == studentId);
+
+//     if (!student) {
+//         alert("Student not found! Please check the Student ID.");
+//         return;
+//     }
+//     if (!book) {
+//         alert("Book not found! Please check the Book ID.");
+//         return;
+//     }
+//     if (book.copies <= 0) {
+//         alert("Sorry, there are no available copies of this book right now.");
+//         return;
+//     }
+
+//     // Deduct copy and save the issue record
+//     book.copies--;
+//     issuedRecords.push({
+//         studentName: student.name,
+//         bookTitle: book.title,
+//         issueDate: issueDate
+//     });
+
+//     // Clear inputs & update UI
+//     document.getElementById('studentId').value = '';
+//     document.getElementById('bookId').value = '';
+//     document.getElementById('issueDate').value = '';
+
+//     loadBooks();       // Updates the 'copies' count in UI
+//     loadIssuedBooks(); // Shows the new issued record
+// }
+
+// --- 3. ISSUE BOOK (FINAL VERSION) ---
+function issueBook() {
+    const studentId = document.getElementById('studentId').value.trim();
+    const bookId = document.getElementById('bookId').value.trim();
+    const issueDate = document.getElementById('issueDate').value;
+
+    if (!studentId || !bookId || !issueDate) {
+        alert("Please provide valid IDs and an issue date.");
+        return;
+    }
+
+    const book = books.find(b => b.id == bookId);
+    const student = students.find(s => s.id == studentId);
+
+    if (!student) {
+        alert("Student not found! Please check the Student ID.");
+        return;
+    }
+    if (!book) {
+        alert("Book not found! Please check the Book ID.");
+        return;
+    }
+    
+    // --- REQUIREMENT 2: Check if available copies are 0 ---
+    if (book.copies <= 0) {
+        alert("Book is not available!");
+        return; // Stops the function here so the book isn't issued
+    }
+
+    // --- REQUIREMENT 1: Decrease available copies by 1 ---
+    book.copies--;
+    
+    // Save the record
+    issuedRecords.push({
+        studentName: student.name,
+        bookTitle: book.title,
+        issueDate: issueDate
+    });
+
+    // Clear inputs
+    document.getElementById('studentId').value = '';
+    document.getElementById('bookId').value = '';
+    document.getElementById('issueDate').value = '';
+
+    // Update UI immediately
+    loadBooks();       // This refreshes the book table, showing the new decreased number!
+    loadIssuedBooks(); // This adds the new record to the issued table
+}
+// --- UI UPDATE FUNCTIONS ---
+
+function loadBooks() {
+    const tableBody = document.getElementById('bookTable');
+    tableBody.innerHTML = '';
     books.forEach(book => {
-
-        table.innerHTML += `
+        tableBody.innerHTML += `
             <tr>
-                <td>${book.id}</td>
+                <td><strong>${book.id}</strong></td>
                 <td>${book.title}</td>
                 <td>${book.author}</td>
                 <td>${book.category}</td>
-                <td>${book.available_copies}</td>
+                <td>${book.copies}</td>
             </tr>
         `;
     });
 }
 
-// Add Book
-async function addBook() {
+function loadStudents() {
+    const tableBody = document.getElementById('studentTable');
+    tableBody.innerHTML = '';
+    students.forEach(student => {
+        tableBody.innerHTML += `
+            <tr>
+                <td><strong>${student.id}</strong></td>
+                <td>${student.name}</td>
+                <td>${student.email}</td>
+            </tr>
+        `;
+    });
+}
 
-    const title = document.getElementById("title").value;
-    const author = document.getElementById("author").value;
-    const category = document.getElementById("category").value;
-    const copies = document.getElementById("copies").value;
+function loadIssuedBooks() {
+    const tableBody = document.getElementById('issuedTable');
+    tableBody.innerHTML = '';
+    issuedRecords.forEach(record => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${record.studentName}</td>
+                <td><strong>${record.bookTitle}</strong></td>
+                <td>${record.issueDate}</td>
+            </tr>
+        `;
+    });
+}
 
-    const response = await fetch(`${API_URL}/books`, {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-            title,
-            author,
-            category,
-            available_copies:copies
-        })
+// --- LOAD DUMMY DATA ON STARTUP ---
+window.onload = () => {
+    // Add one dummy book
+    books.push({
+        id: bookIdCounter++,
+        title: "The Great Gatsby",
+        author: "F. Scott Fitzgerald",
+        category: "Fiction",
+        copies: 3
+    });
+    
+    // Add one dummy student
+    students.push({
+        id: studentIdCounter++,
+        name: "Jane Doe",
+        email: "jane@example.com"
     });
 
-    const data = await response.json();
-
-    alert(data.message);
-
+    // Render tables
     loadBooks();
-}
-
-// Add Student
-async function addStudent() {
-
-    const name = document.getElementById("studentName").value;
-    const email = document.getElementById("studentEmail").value;
-
-    const response = await fetch(`${API_URL}/students`, {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-            name,
-            email
-        })
-    });
-
-    const data = await response.json();
-
-    alert(data.message);
-}
-
-// Issue Book
-async function issueBook() {
-
-    const student_id =
-        document.getElementById("studentId").value;
-
-    const book_id =
-        document.getElementById("bookId").value;
-
-    const issue_date =
-        document.getElementById("issueDate").value;
-
-    const response =
-        await fetch(`${API_URL}/issue-book`, {
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-            student_id,
-            book_id,
-            issue_date
-        })
-    });
-
-    const data = await response.json();
-
-    alert(data.message);
-
-    loadBooks();
-}
-
-loadBooks();
+    loadStudents();
+    loadIssuedBooks();
+};
