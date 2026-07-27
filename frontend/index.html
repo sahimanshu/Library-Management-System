@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>📚 Library Management System</h1>
+
+        <!-- Add Book -->
+        <div class="card">
+            <h2>Add Book</h2>
+
+            <input type="text" id="title" placeholder="Book Title">
+            <input type="text" id="author" placeholder="Author">
+            <input type="text" id="category" placeholder="Category">
+            <input type="number" id="copies" placeholder="Available Copies">
+
+            <button onclick="addBook()">Add Book</button>
+        </div>
+
+        <!-- Add Student -->
+        <div class="card">
+            <h2>Add Student</h2>
+
+            <input type="text" id="studentName" placeholder="Student Name">
+            <input type="email" id="studentEmail" placeholder="Student Email">
+
+            <button onclick="addStudent()">Add Student</button>
+        </div>
+
+        <!-- Issue Book -->
+        <div class="card">
+            <h2>Issue Book</h2>
+
+            <input type="number" id="studentId" placeholder="Student ID">
+            <input type="number" id="bookId" placeholder="Book ID">
+            <input type="date" id="issueDate">
+
+            <button onclick="issueBook()">Issue Book</button>
+        </div>
+
+        <!-- Books List -->
+        <div class="card">
+            <h2>Available Books</h2>
+
+            <button onclick="loadBooks()">Refresh Books</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Copies</th>
+                    </tr>
+                </thead>
+
+                <tbody id="bookTable"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
