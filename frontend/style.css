@@ -139,3 +139,14 @@ table th {
 table tr:hover {
     background: #f1f5f9;
 }
+
+/* Delete Button Styling */
+.btn-delete {
+    background: #ef4444;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}

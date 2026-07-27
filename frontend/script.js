@@ -63,94 +63,6 @@ function addStudent() {
     loadStudents(); // Refresh student table
 }
 
-// --- 3. ISSUE BOOK ---
-// function issueBook() {
-//     const studentId = parseInt(document.getElementById('studentId').value);
-//     const bookId = parseInt(document.getElementById('bookId').value);
-//     const issueDate = document.getElementById('issueDate').value;
-
-//     if (isNaN(studentId) || isNaN(bookId) || !issueDate) {
-//         alert("Please provide valid IDs and an issue date.");
-//         return;
-//     }
-
-//     const book = books.find(b => b.id === bookId);
-//     const student = students.find(s => s.id === studentId);
-
-//     if (!student) {
-//         alert("Student not found! Please check the Student ID.");
-//         return;
-//     }
-//     if (!book) {
-//         alert("Book not found! Please check the Book ID.");
-//         return;
-//     }
-//     if (book.copies <= 0) {
-//         alert("Sorry, there are no available copies of this book right now.");
-//         return;
-//     }
-
-//     // Deduct copy and save the issue record
-//     book.copies--;
-//     issuedRecords.push({
-//         studentName: student.name,
-//         bookTitle: book.title,
-//         issueDate: issueDate
-//     });
-
-//     // Clear inputs & update UI
-//     document.getElementById('studentId').value = '';
-//     document.getElementById('bookId').value = '';
-//     document.getElementById('issueDate').value = '';
-
-//     loadBooks();       // Updates the 'copies' count in UI
-//     loadIssuedBooks(); // Shows the new issued record
-// }
-// --- 3. ISSUE BOOK (CORRECTED) ---
-// function issueBook() {
-//     const studentId = document.getElementById('studentId').value.trim();
-//     const bookId = document.getElementById('bookId').value.trim();
-//     const issueDate = document.getElementById('issueDate').value;
-
-//     if (!studentId || !bookId || !issueDate) {
-//         alert("Please provide valid IDs and an issue date.");
-//         return;
-//     }
-
-//     // Using "==" instead of "===" ensures it matches even if types (string/number) differ
-//     const book = books.find(b => b.id == bookId);
-//     const student = students.find(s => s.id == studentId);
-
-//     if (!student) {
-//         alert("Student not found! Please check the Student ID.");
-//         return;
-//     }
-//     if (!book) {
-//         alert("Book not found! Please check the Book ID.");
-//         return;
-//     }
-//     if (book.copies <= 0) {
-//         alert("Sorry, there are no available copies of this book right now.");
-//         return;
-//     }
-
-//     // Deduct copy and save the issue record
-//     book.copies--;
-//     issuedRecords.push({
-//         studentName: student.name,
-//         bookTitle: book.title,
-//         issueDate: issueDate
-//     });
-
-//     // Clear inputs & update UI
-//     document.getElementById('studentId').value = '';
-//     document.getElementById('bookId').value = '';
-//     document.getElementById('issueDate').value = '';
-
-//     loadBooks();       // Updates the 'copies' count in UI
-//     loadIssuedBooks(); // Shows the new issued record
-// }
-
 // --- 3. ISSUE BOOK (FINAL VERSION) ---
 function issueBook() {
     const studentId = document.getElementById('studentId').value.trim();
@@ -217,6 +129,7 @@ function loadBooks() {
     });
 }
 
+// --- LOAD STUDENTS UI ---
 function loadStudents() {
     const tableBody = document.getElementById('studentTable');
     tableBody.innerHTML = '';
@@ -226,9 +139,24 @@ function loadStudents() {
                 <td><strong>${student.id}</strong></td>
                 <td>${student.name}</td>
                 <td>${student.email}</td>
+                <td>
+                    <button class="btn-delete" onclick="deleteStudent(${student.id})">Delete</button>
+                </td>
             </tr>
         `;
     });
+}
+
+// --- DELETE STUDENT ---
+function deleteStudent(id) {
+    // Show a confirmation popup before deleting
+    if (confirm("Are you sure you want to delete this student?")) {
+        // Remove the student with the matching id from the array
+        students = students.filter(student => student.id != id);
+        
+        // Refresh the student table on the screen
+        loadStudents(); 
+    }
 }
 
 function loadIssuedBooks() {
