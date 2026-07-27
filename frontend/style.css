@@ -150,3 +150,11 @@ table tr:hover {
 .btn-delete:hover {
     background: #dc2626;
 }
+
+/* Form Return Button */
+.btn-return-form { 
+    background: #f59e0b; 
+}
+.btn-return-form:hover { 
+    background: #d97706; 
+}

@@ -106,7 +106,9 @@
                         <table>
                             <thead>
                                 <tr>
+                                    <th>Student ID</th>
                                     <th>Student Name</th>
+                                    <th>Book ID</th>
                                     <th>Book Title</th>
                                     <th>Issue Date</th>
                                 </tr>
@@ -117,6 +119,15 @@
                 </div>
 
             </div>
+            <!-- Return Book -->
+<div class="card">
+    <h2>Return Book</h2>
+    <div class="form-group">
+        <input type="number" id="returnStudentId" placeholder="Student ID">
+        <input type="number" id="returnBookId" placeholder="Book ID">
+        <button onclick="processReturn()" class="btn-return-form">Return Book</button>
+    </div>
+</div>
         </div>
     </div>
 

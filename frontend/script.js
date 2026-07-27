@@ -64,6 +64,54 @@ function addStudent() {
 }
 
 // --- 3. ISSUE BOOK (FINAL VERSION) ---
+// function issueBook() {
+//     const studentId = document.getElementById('studentId').value.trim();
+//     const bookId = document.getElementById('bookId').value.trim();
+//     const issueDate = document.getElementById('issueDate').value;
+
+//     if (!studentId || !bookId || !issueDate) {
+//         alert("Please provide valid IDs and an issue date.");
+//         return;
+//     }
+
+//     const book = books.find(b => b.id == bookId);
+//     const student = students.find(s => s.id == studentId);
+
+//     if (!student) {
+//         alert("Student not found! Please check the Student ID.");
+//         return;
+//     }
+//     if (!book) {
+//         alert("Book not found! Please check the Book ID.");
+//         return;
+//     }
+    
+//     // --- REQUIREMENT 2: Check if available copies are 0 ---
+//     if (book.copies <= 0) {
+//         alert("Book is not available!");
+//         return; // Stops the function here so the book isn't issued
+//     }
+
+//     // --- REQUIREMENT 1: Decrease available copies by 1 ---
+//     book.copies--;
+    
+//     // Save the record
+//     issuedRecords.push({
+//         studentName: student.name,
+//         bookTitle: book.title,
+//         issueDate: issueDate
+//     });
+
+//     // Clear inputs
+//     document.getElementById('studentId').value = '';
+//     document.getElementById('bookId').value = '';
+//     document.getElementById('issueDate').value = '';
+
+//     // Update UI immediately
+//     loadBooks();       // This refreshes the book table, showing the new decreased number!
+//     loadIssuedBooks(); // This adds the new record to the issued table
+// }
+// --- 3. ISSUE BOOK (UPDATED TO SAVE IDs) ---
 function issueBook() {
     const studentId = document.getElementById('studentId').value.trim();
     const bookId = document.getElementById('bookId').value.trim();
@@ -86,30 +134,69 @@ function issueBook() {
         return;
     }
     
-    // --- REQUIREMENT 2: Check if available copies are 0 ---
     if (book.copies <= 0) {
         alert("Book is not available!");
-        return; // Stops the function here so the book isn't issued
+        return; 
     }
 
-    // --- REQUIREMENT 1: Decrease available copies by 1 ---
     book.copies--;
     
-    // Save the record
+    // Save the record along with studentId and bookId so we can process returns
     issuedRecords.push({
+        studentId: student.id,
+        bookId: book.id,
         studentName: student.name,
         bookTitle: book.title,
         issueDate: issueDate
     });
 
-    // Clear inputs
     document.getElementById('studentId').value = '';
     document.getElementById('bookId').value = '';
     document.getElementById('issueDate').value = '';
 
-    // Update UI immediately
-    loadBooks();       // This refreshes the book table, showing the new decreased number!
-    loadIssuedBooks(); // This adds the new record to the issued table
+    loadBooks();       
+    loadIssuedBooks(); 
+}
+
+// --- 4. RETURN BOOK FORM FUNCTION (NEW) ---
+function processReturn() {
+    const studentId = document.getElementById('returnStudentId').value.trim();
+    const bookId = document.getElementById('returnBookId').value.trim();
+
+    if (!studentId || !bookId) {
+        alert("Please provide both Student ID and Book ID to return a book.");
+        return;
+    }
+
+    // Look for a matching record where both the student ID and book ID match
+    const recordIndex = issuedRecords.findIndex(r => r.studentId == studentId && r.bookId == bookId);
+
+    if (recordIndex === -1) {
+        alert("No active issue record found for this Student and Book combination.");
+        return;
+    }
+
+    // Get the record details
+    const record = issuedRecords[recordIndex];
+
+    // Find the book in the library and add 1 back to the available copies
+    const book = books.find(b => b.id == record.bookId);
+    if (book) {
+        book.copies++;
+    }
+
+    // Remove the record from the issued list
+    issuedRecords.splice(recordIndex, 1);
+
+    alert(`Success! "${record.bookTitle}" has been returned successfully.`);
+
+    // Clear the return form inputs
+    document.getElementById('returnStudentId').value = '';
+    document.getElementById('returnBookId').value = '';
+
+    // Automatically refresh the tables on the screen
+    loadBooks();
+    loadIssuedBooks();
 }
 // --- UI UPDATE FUNCTIONS ---
 
@@ -159,21 +246,38 @@ function deleteStudent(id) {
     }
 }
 
+// function loadIssuedBooks() {
+//     const tableBody = document.getElementById('issuedTable');
+//     tableBody.innerHTML = '';
+//     issuedRecords.forEach(record => {
+//         tableBody.innerHTML += `
+//             <tr>
+//                 <td>${record.studentName}</td>
+//                 <td><strong>${record.bookTitle}</strong></td>
+//                 <td>${record.issueDate}</td>
+//             </tr>
+//         `;
+//     });
+// }
+
+// --- LOAD DUMMY DATA ON STARTUP ---
+
+// --- LOAD ISSUED BOOKS UI (UPDATED WITH IDs) ---
 function loadIssuedBooks() {
     const tableBody = document.getElementById('issuedTable');
     tableBody.innerHTML = '';
     issuedRecords.forEach(record => {
         tableBody.innerHTML += `
             <tr>
+                <td><strong>${record.studentId}</strong></td>
                 <td>${record.studentName}</td>
-                <td><strong>${record.bookTitle}</strong></td>
+                <td><strong>${record.bookId}</strong></td>
+                <td>${record.bookTitle}</td>
                 <td>${record.issueDate}</td>
             </tr>
         `;
     });
 }
-
-// --- LOAD DUMMY DATA ON STARTUP ---
 window.onload = () => {
     // Add one dummy book
     books.push({
@@ -196,3 +300,4 @@ window.onload = () => {
     loadStudents();
     loadIssuedBooks();
 };
+
