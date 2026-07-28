@@ -63,54 +63,7 @@ function addStudent() {
     loadStudents(); // Refresh student table
 }
 
-// --- 3. ISSUE BOOK (FINAL VERSION) ---
-// function issueBook() {
-//     const studentId = document.getElementById('studentId').value.trim();
-//     const bookId = document.getElementById('bookId').value.trim();
-//     const issueDate = document.getElementById('issueDate').value;
 
-//     if (!studentId || !bookId || !issueDate) {
-//         alert("Please provide valid IDs and an issue date.");
-//         return;
-//     }
-
-//     const book = books.find(b => b.id == bookId);
-//     const student = students.find(s => s.id == studentId);
-
-//     if (!student) {
-//         alert("Student not found! Please check the Student ID.");
-//         return;
-//     }
-//     if (!book) {
-//         alert("Book not found! Please check the Book ID.");
-//         return;
-//     }
-    
-//     // --- REQUIREMENT 2: Check if available copies are 0 ---
-//     if (book.copies <= 0) {
-//         alert("Book is not available!");
-//         return; // Stops the function here so the book isn't issued
-//     }
-
-//     // --- REQUIREMENT 1: Decrease available copies by 1 ---
-//     book.copies--;
-    
-//     // Save the record
-//     issuedRecords.push({
-//         studentName: student.name,
-//         bookTitle: book.title,
-//         issueDate: issueDate
-//     });
-
-//     // Clear inputs
-//     document.getElementById('studentId').value = '';
-//     document.getElementById('bookId').value = '';
-//     document.getElementById('issueDate').value = '';
-
-//     // Update UI immediately
-//     loadBooks();       // This refreshes the book table, showing the new decreased number!
-//     loadIssuedBooks(); // This adds the new record to the issued table
-// }
 // --- 3. ISSUE BOOK (UPDATED TO SAVE IDs) ---
 function issueBook() {
     const studentId = document.getElementById('studentId').value.trim();
@@ -245,22 +198,6 @@ function deleteStudent(id) {
         loadStudents(); 
     }
 }
-
-// function loadIssuedBooks() {
-//     const tableBody = document.getElementById('issuedTable');
-//     tableBody.innerHTML = '';
-//     issuedRecords.forEach(record => {
-//         tableBody.innerHTML += `
-//             <tr>
-//                 <td>${record.studentName}</td>
-//                 <td><strong>${record.bookTitle}</strong></td>
-//                 <td>${record.issueDate}</td>
-//             </tr>
-//         `;
-//     });
-// }
-
-// --- LOAD DUMMY DATA ON STARTUP ---
 
 // --- LOAD ISSUED BOOKS UI (UPDATED WITH IDs) ---
 function loadIssuedBooks() {
